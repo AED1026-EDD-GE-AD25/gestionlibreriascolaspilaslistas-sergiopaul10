@@ -1,0 +1,108 @@
+name: Autograding Tests
+'on':
+- push
+- repository_dispatch
+permissions:
+  checks: write
+  actions: read
+  contents: read
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: testAgregarLibro
+      id: testagregarlibro
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: testAgregarLibro
+        setup-command: make compile
+        command: java -Dfile.encoding=UTF-8 -jar lib/junit-platform-console-standalone-1.5.2.jar
+          --class-path build --select-method miTest.AppTest#testAgregarLibro
+        timeout: 10
+        max-score: 30
+    - name: testMostrarLibrosLista
+      id: testmostrarlibroslista
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: testMostrarLibrosLista
+        setup-command: make compile
+        command: java -Dfile.encoding=UTF-8 -jar lib/junit-platform-console-standalone-1.5.2.jar
+          --class-path build --select-method miTest.AppTest#testMostrarLibrosLista
+        timeout: 10
+        max-score: 10
+    - name: testAgregarLibroCola
+      id: testagregarlibrocola
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: testAgregarLibroCola
+        setup-command: make compile
+        command: java -Dfile.encoding=UTF-8 -jar lib/junit-platform-console-standalone-1.5.2.jar
+          --class-path build --select-method miTest.AppTest#testAgregarLibroCola
+        timeout: 10
+        max-score: 10
+    - name: testObtenerLibroCola
+      id: testobtenerlibrocola
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: testObtenerLibroCola
+        setup-command: make compile
+        command: ava -Dfile.encoding=UTF-8 -jar lib/junit-platform-console-standalone-1.5.2.jar
+          --class-path build --select-method miTest.AppTest#testObtenerLibroCola
+        timeout: 10
+        max-score: 10
+    - name: testEliminarUltimoLibro
+      id: testeliminarultimolibro
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: testEliminarUltimoLibro
+        setup-command: make compile
+        command: java -Dfile.encoding=UTF-8 -jar lib/junit-platform-console-standalone-1.5.2.jar
+          --class-path build --select-method miTest.AppTest#testEliminarUltimoLibro
+        timeout: 10
+        max-score: 10
+    - name: testDeshacerEliminacion
+      id: testdeshacereliminacion
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: testDeshacerEliminacion
+        setup-command: make compile
+        command: java -Dfile.encoding=UTF-8 -jar lib/junit-platform-console-standalone-1.5.2.jar
+          --class-path build --select-method miTest.AppTest#testDeshacerEliminacion
+        timeout: 10
+        max-score: 10
+    - name: testDevolverLibro
+      id: testdevolverlibro
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: testDevolverLibro
+        setup-command: make compile
+        command: java -Dfile.encoding=UTF-8 -jar lib/junit-platform-console-standalone-1.5.2.jar
+          --class-path build --select-method miTest.AppTest#testDevolverLibro
+        timeout: 10
+        max-score: 10
+    - name: testCrearPedido
+      id: testcrearpedido
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: testCrearPedido
+        setup-command: make compile
+        command: java -Dfile.encoding=UTF-8 -jar lib/junit-platform-console-standalone-1.5.2.jar
+          --class-path build --select-method miTest.AppTest#testCrearPedido
+        timeout: 10
+        max-score: 10
+    - name: Autograding Reporter
+      uses: classroom-resources/autograding-grading-reporter@v1
+      env:
+        TESTAGREGARLIBRO_RESULTS: "${{steps.testagregarlibro.outputs.result}}"
+        TESTMOSTRARLIBROSLISTA_RESULTS: "${{steps.testmostrarlibroslista.outputs.result}}"
+        TESTAGREGARLIBROCOLA_RESULTS: "${{steps.testagregarlibrocola.outputs.result}}"
+        TESTOBTENERLIBROCOLA_RESULTS: "${{steps.testobtenerlibrocola.outputs.result}}"
+        TESTELIMINARULTIMOLIBRO_RESULTS: "${{steps.testeliminarultimolibro.outputs.result}}"
+        TESTDESHACERELIMINACION_RESULTS: "${{steps.testdeshacereliminacion.outputs.result}}"
+        TESTDEVOLVERLIBRO_RESULTS: "${{steps.testdevolverlibro.outputs.result}}"
+        TESTCREARPEDIDO_RESULTS: "${{steps.testcrearpedido.outputs.result}}"
+      with:
+        runners: testagregarlibro,testmostrarlibroslista,testagregarlibrocola,testobtenerlibrocola,testeliminarultimolibro,testdeshacereliminacion,testdevolverlibro,testcrearpedido
