@@ -21,12 +21,8 @@ public class MenuOpciones {
         String isbn = scanner.nextLine();
         
         Libro libro = libreria.crearLibro(titulo, autor, isbn);
-        if (libro != null) {
-            libreria.agregarLibro(libro);
-            System.out.println("Libro agregado a préstamos: " + libro);
-        } else {
-            System.out.println("Error: No se pudo crear el libro. Verifique los datos.");
-        }
+        libreria.agregarLibro(libro);
+        System.out.println("Libro agregado a préstamos: " + libro);
     }
     
     public static void mostrarLibros() throws PosicionIlegalException {
@@ -50,13 +46,9 @@ public class MenuOpciones {
         String isbn = scanner.nextLine();
         
         Libro libro = libreria.crearLibro(titulo, autor, isbn);
-        if (libro != null) {
-            boolean resultado = libreria.agregarLibroCola(libro);
-            if (resultado) {
-                System.out.println("Libro agregado a reservas: " + libro);
-            }
-        } else {
-            System.out.println("Error: No se pudo crear el libro para reserva.");
+        boolean resultado = libreria.agregarLibroCola(libro);
+        if (resultado) {
+            System.out.println("Libro agregado a reservas: " + libro);
         }
     }
 
@@ -69,15 +61,15 @@ public class MenuOpciones {
         }
     }
 
-    public static void mostrarReservaLibros() {
-        // Usamos Object ya que no podemos importar Cola
-        Object reservas = libreria.mostrarReservaLibros();
-        if (reservas != null) {
-            System.out.println("=== LIBROS EN RESERVA ===");
-            // Para una implementación más completa, necesitarías métodos de visualización en Cola
-            System.out.println("Libros en reserva mostrados (consola para detalles)");
-        } else {
+    public static void mostrarReservaLibros() throws PosicionIlegalException {
+        ListaDoble<Libro> reservas = libreria.mostrarReservaLibros();
+        if (reservas.esVacia()) {
             System.out.println("No hay libros en reserva.");
+        } else {
+            System.out.println("=== LIBROS EN RESERVA ===");
+            for (int i = 0; i < reservas.getTamanio(); i++) {
+                System.out.println((i + 1) + ". " + reservas.getValor(i));
+            }
         }
     }
 
@@ -102,7 +94,6 @@ public class MenuOpciones {
         System.out.print("Ingrese el ISBN del libro a devolver: ");
         String isbn = scanner.nextLine();
         
-        // Buscar el libro por ISBN
         Libro libroEncontrado = null;
         ListaDoble<Libro> libros = libreria.obtenerLibros();
         for (int i = 0; i < libros.getTamanio(); i++) {
@@ -117,8 +108,6 @@ public class MenuOpciones {
             boolean resultado = libreria.devolverLibro(libroEncontrado);
             if (resultado) {
                 System.out.println("Libro devuelto: " + libroEncontrado);
-            } else {
-                System.out.println("Error al devolver el libro.");
             }
         } else {
             System.out.println("Libro no encontrado con ISBN: " + isbn);
@@ -135,7 +124,6 @@ public class MenuOpciones {
     }
 
     public static void deshacerEliminarLibro() {
-        // CORREGIDO: usar el nombre correcto del método
         Libro libroRestaurado = libreria.deshacerEliminarLibro();
         if (libroRestaurado != null) {
             System.out.println("Libro restaurado: " + libroRestaurado);

@@ -25,7 +25,7 @@ public class Libro {
     
     @Override
     public String toString() {
-        return "Libro{titulo='" + titulo + "', autor='" + autor + "', isbn='" + isbn + "'}";
+        return titulo + " - " + autor + " (" + isbn + ")";
     }
     
     @Override
@@ -33,11 +33,11 @@ public class Libro {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         Libro libro = (Libro) obj;
-        return isbn != null ? isbn.equals(libro.isbn) : libro.isbn == null;
+        return isbn.equals(libro.isbn);
     }
     
     @Override
     public int hashCode() {
-        return isbn != null ? isbn.hashCode() : 0;
+        return isbn.hashCode();
     }
 }
