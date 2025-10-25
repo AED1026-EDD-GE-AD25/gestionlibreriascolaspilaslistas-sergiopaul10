@@ -31,18 +31,29 @@ public class Libreria {
     }
 
     public Libro obtenerLibroCola() {
-        try {
-            if (!colaLibros.esVacia()) {
-                // FIFO: obtener el primer elemento (posición 0)
-                Libro libro = colaLibros.getValor(0);
-                colaLibros.remover(0);
-                return libro;
-            }
-        } catch (PosicionIlegalException e) {
-            System.err.println("Error al obtener libro de la cola: " + e.getMessage());
+    try {
+        if (colaLibros.esVacia()) {
+            System.out.println("DEBUG: Cola vacía, retornando null");
+            return null;
         }
+        
+        System.out.println("DEBUG: Tamaño cola antes: " + colaLibros.getTamanio());
+        
+        // Obtener el primer elemento
+        Libro primerLibro = colaLibros.getValor(0);
+        System.out.println("DEBUG: Libro obtenido: " + primerLibro);
+        
+        // Remover el primer elemento
+        colaLibros.remover(0);
+        System.out.println("DEBUG: Tamaño cola después: " + colaLibros.getTamanio());
+        
+        return primerLibro;
+        
+    } catch (PosicionIlegalException e) {
+        System.out.println("DEBUG: Excepción en obtenerLibroCola: " + e.getMessage());
         return null;
     }
+}
 
     public Libro obtenerLibroPila() {
         try {
