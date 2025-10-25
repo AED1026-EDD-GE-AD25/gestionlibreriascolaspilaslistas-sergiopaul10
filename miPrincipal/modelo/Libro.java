@@ -11,7 +11,6 @@ public class Libro {
         this.isbn = isbn;
     }
     
-    // Getters
     public String getTitulo() {
         return titulo;
     }
@@ -26,11 +25,7 @@ public class Libro {
     
     @Override
     public String toString() {
-        return "Libro{" +
-                "titulo='" + titulo + '\'' +
-                ", autor='" + autor + '\'' +
-                ", isbn='" + isbn + '\'' +
-                '}';
+        return titulo + " - " + autor + " (" + isbn + ")";
     }
     
     @Override
