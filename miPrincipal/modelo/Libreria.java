@@ -2,25 +2,21 @@ package miPrincipal.modelo;
 
 import listaDoble.ListaDoble;
 import listaDoble.PosicionIlegalException;
-import pila.Pila;
-import cola.Cola;
 import utilerias.Fecha;
-import miPrincipal.servicio.ServicioDatos;
 
 public class Libreria {
     private ListaDoble<Libro> listaLibros;
-    private Cola<Libro> colaLibros;
-    private Pila<Libro> pilaLibrosEliminados;
+    private ListaDoble<Libro> colaLibros;  // Usaremos ListaDoble como cola
+    private ListaDoble<Libro> pilaLibrosEliminados;  // Usaremos ListaDoble como pila
     private ListaDoble<Pedido> listaPedidos;
 
     public Libreria(){
         listaLibros = new ListaDoble<>();
-        colaLibros = new Cola<>();
-        pilaLibrosEliminados = new Pila<>();
+        colaLibros = new ListaDoble<>();  // Simulamos cola con ListaDoble
+        pilaLibrosEliminados = new ListaDoble<>();  // Simulamos pila con ListaDoble
         listaPedidos = new ListaDoble<>();
     }
 
-    
     public void agregarLibro(Libro libro){
         listaLibros.agregar(libro);
     }
@@ -30,31 +26,30 @@ public class Libreria {
     }
 
     public boolean agregarLibroCola(Libro libro){
-        colaLibros.encolar(libro);
+        colaLibros.agregar(libro);
         return true;
     }
 
     public Libro obtenerLibroCola(){
-        if (!colaLibros.esVacia()) {
-            return colaLibros.desencolar();
+        try {
+            if (!colaLibros.esVacia()) {
+                Libro libro = colaLibros.getValor(0);
+                colaLibros.remover(0);
+                return libro;
+            }
+        } catch (PosicionIlegalException e) {
         }
         return null;
     }
 
-    public Libro obtenerLibroPila(){
-        if (!pilaLibrosEliminados.esVacia()) {
-            return pilaLibrosEliminados.cima();
-        }
-        return null;
-    }
-
-    public Cola<Libro> mostrarReservaLibros(){
+    public ListaDoble<Libro> mostrarReservaLibros(){
         return colaLibros;
     }
 
     public Libro crearLibro(String titulo, String autor, String isbn){
         return new Libro(titulo, autor, isbn);
     }
+
     public Pedido crearPedido(Libro libro, Fecha fecha){
         return new Pedido(libro, fecha);
     }
@@ -74,20 +69,40 @@ public class Libreria {
             int ultimaPosicion = listaLibros.getTamanio() - 1;
             Libro libroEliminado = listaLibros.getValor(ultimaPosicion);
             listaLibros.remover(ultimaPosicion);
-            pilaLibrosEliminados.apilar(libroEliminado);
+            
+            // Agregar a la pila de eliminados
+            pilaLibrosEliminados.agregar(libroEliminado);
             return libroEliminado;
         }
         return null;
     }
 
-    public Libro deshacerEliminarLibro(){  
-    if (!pilaLibrosEliminados.esVacia()) {
-        Libro libroRestaurado = pilaLibrosEliminados.retirar();
-        listaLibros.agregar(libroRestaurado);
-        return libroRestaurado;
+    public Libro deshacerEliminarLibro(){
+        try {
+            if (!pilaLibrosEliminados.esVacia()) {
+                int ultimaPosicion = pilaLibrosEliminados.getTamanio() - 1;
+                Libro libroRestaurado = pilaLibrosEliminados.getValor(ultimaPosicion);
+                pilaLibrosEliminados.remover(ultimaPosicion);
+                listaLibros.agregar(libroRestaurado);
+                return libroRestaurado;
+            }
+        } catch (PosicionIlegalException e) {
+            // Manejar excepción
+        }
+        return null;
     }
-    return null;
-}
+
+    public Libro obtenerLibroPila(){
+        try {
+            if (!pilaLibrosEliminados.esVacia()) {
+                int ultimaPosicion = pilaLibrosEliminados.getTamanio() - 1;
+                return pilaLibrosEliminados.getValor(ultimaPosicion);
+            }
+        } catch (PosicionIlegalException e) {
+            // Manejar excepción
+        }
+        return null;
+    }
 
     public Libro buscarLibro(String isbn) throws PosicionIlegalException {
         for (int i = 0; i < listaLibros.getTamanio(); i++) {
