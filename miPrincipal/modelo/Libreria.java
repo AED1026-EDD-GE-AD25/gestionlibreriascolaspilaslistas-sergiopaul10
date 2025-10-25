@@ -80,7 +80,7 @@ public class Libreria {
         return null;
     }
 
-    public Libro deshacerEliminacion(){
+    public Libro deshacerEliminacionLibro(){
         if (!pilaLibrosEliminados.esVacia()) {
             Libro libroRestaurado = pilaLibrosEliminados.retirar();
             listaLibros.agregar(libroRestaurado);

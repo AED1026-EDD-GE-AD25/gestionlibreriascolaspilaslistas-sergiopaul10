@@ -1,5 +1,4 @@
 package miPrincipal.iu;
-import miPrincipal.servicio.ServicioDatos;
 import miPrincipal.modelo.Libro;
 import miPrincipal.modelo.Pedido;
 import miPrincipal.modelo.Libreria;
@@ -8,9 +7,6 @@ import utilerias.Fecha;
 import listaDoble.ListaDoble;
 import listaDoble.PosicionIlegalException;
 import cola.Cola;
-import pila.Pila;
-
-import java.util.Scanner;
 
 public class MenuOpciones{
     static Scanner scanner = new Scanner(System.in);
@@ -25,11 +21,8 @@ public class MenuOpciones{
         String isbn = scanner.nextLine();
         
         Libro libro = libreria.crearLibro(titulo, autor, isbn);
-        if (libro != null) {
-            libreria.agregarLibro(libro);
-        } else {
-            System.out.println("Error: No se pudo crear el libro. Verifique los datos.");
-        }
+        libreria.agregarLibro(libro);
+        System.out.println("Libro agregado a préstamos: " + libro);
     }
     
     public static void mostrarLibros() throws PosicionIlegalException {
@@ -43,7 +36,6 @@ public class MenuOpciones{
             }
         }
     }
-
     public static void agregarLibroCola(){
         System.out.print("Ingrese el título del libro para reserva: ");
         String titulo = scanner.nextLine();
@@ -53,47 +45,44 @@ public class MenuOpciones{
         String isbn = scanner.nextLine();
         
         Libro libro = libreria.crearLibro(titulo, autor, isbn);
-        if (libro != null) {
-            libreria.agregarLibroCola(libro);
-        } else {
-            System.out.println("Error: No se pudo crear el libro para reserva.");
+        boolean resultado = libreria.agregarLibroCola(libro);
+        if (resultado) {
+            System.out.println("Libro agregado a reservas: " + libro);
         }
     }
 
     public static void obtenerLibroCola(){
         Libro libro = libreria.obtenerLibroCola();
         if (libro != null) {
-            System.out.println("Libro listo para préstamo: " + libro);
+            System.out.println("Libro obtenido de reservas: " + libro);
+        } else {
+            System.out.println("No hay libros en la cola de reservas.");
         }
     }
-
     public static void mostrarReservaLibros(){
         Cola<Libro> reservas = libreria.mostrarReservaLibros();
         if (reservas.esVacia()) {
             System.out.println("No hay libros en reserva.");
         } else {
             System.out.println("=== LIBROS EN RESERVA ===");
-            System.out.println("Cantidad de libros en reserva: " + reservas.getTamanio());
+            // Para mostrar sin modificar la cola, necesitarías un método iterator en tu Cola
+            System.out.println("Total de libros en reserva: " + reservas.getTamanio());
         }
     }
-
     public static void crearPedido(){
-        System.out.print("Ingrese el título del libro para el pedido:");
+        System.out.print("Ingrese el título del libro para el pedido: ");
         String tituloPedido = scanner.nextLine();
-        System.out.print("Ingrese el autor del libro para el pedido:");
+        System.out.print("Ingrese el autor del libro para el pedido: ");
         String autorPedido = scanner.nextLine();
-        System.out.print("Ingrese el ISBN del libro para el pedido:");
+        System.out.print("Ingrese el ISBN del libro para el pedido: ");
         String isbnPedido = scanner.nextLine();
+        
         Libro libroPedido = libreria.crearLibro(tituloPedido, autorPedido, isbnPedido);
-        Pedido pedido = null;
-        if (libroPedido != null){
-            pedido = libreria.crearPedido(libroPedido, new Fecha());
-            if (pedido != null)
-                System.out.println("Pedido creado exitosamente: "+pedido);
-            else
-                System.out.println("No fue posible crear el pedido");
+        Pedido pedido = libreria.crearPedido(libroPedido, new Fecha());
+        if (pedido != null) {
+            System.out.println("Pedido creado exitosamente: " + pedido);
         } else {
-            System.out.println("Error: no fue posible crear el Libro");
+            System.out.println("No fue posible crear el pedido");
         }
     }
 
@@ -101,9 +90,22 @@ public class MenuOpciones{
         System.out.print("Ingrese el ISBN del libro a devolver: ");
         String isbn = scanner.nextLine();
         
-        Libro libro = libreria.buscarLibro(isbn);
-        if (libro != null) {
-            libreria.devolverLibro(libro);
+        // Buscar el libro por ISBN
+        Libro libroEncontrado = null;
+        ListaDoble<Libro> libros = libreria.obtenerLibros();
+        for (int i = 0; i < libros.getTamanio(); i++) {
+            Libro libro = libros.getValor(i);
+            if (libro.getIsbn().equals(isbn)) {
+                libroEncontrado = libro;
+                break;
+            }
+        }
+        
+        if (libroEncontrado != null) {
+            boolean resultado = libreria.devolverLibro(libroEncontrado);
+            if (resultado) {
+                System.out.println("Libro devuelto: " + libroEncontrado);
+            }
         } else {
             System.out.println("Libro no encontrado con ISBN: " + isbn);
         }
@@ -112,7 +114,9 @@ public class MenuOpciones{
     public static void eliminarUltimoLibro() throws PosicionIlegalException {
         Libro libroEliminado = libreria.eliminarUltimoLibro();
         if (libroEliminado != null) {
-            System.out.println("Libro eliminado: " + libroEliminado);
+            System.out.println("Último libro eliminado: " + libroEliminado);
+        } else {
+            System.out.println("No hay libros para eliminar.");
         }
     }
 
@@ -120,6 +124,8 @@ public class MenuOpciones{
         Libro libroRestaurado = libreria.deshacerEliminacion();
         if (libroRestaurado != null) {
             System.out.println("Libro restaurado: " + libroRestaurado);
+        } else {
+            System.out.println("No hay eliminaciones para deshacer.");
         }
     }
 }
