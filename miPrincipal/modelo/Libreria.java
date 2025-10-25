@@ -80,14 +80,14 @@ public class Libreria {
         return null;
     }
 
-    public Libro deshacerEliminacionLibro(){
-        if (!pilaLibrosEliminados.esVacia()) {
-            Libro libroRestaurado = pilaLibrosEliminados.retirar();
-            listaLibros.agregar(libroRestaurado);
-            return libroRestaurado;
-        }
-        return null;
+    public Libro deshacerEliminarLibro(){  
+    if (!pilaLibrosEliminados.esVacia()) {
+        Libro libroRestaurado = pilaLibrosEliminados.retirar();
+        listaLibros.agregar(libroRestaurado);
+        return libroRestaurado;
     }
+    return null;
+}
 
     public Libro buscarLibro(String isbn) throws PosicionIlegalException {
         for (int i = 0; i < listaLibros.getTamanio(); i++) {
