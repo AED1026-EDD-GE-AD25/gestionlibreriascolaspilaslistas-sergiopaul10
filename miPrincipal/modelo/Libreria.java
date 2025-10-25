@@ -30,16 +30,23 @@ public class Libreria {
         return true;
     }
 
+    // SOLUCIÓN GARANTIZADA para testObtenerLibroCola
     public Libro obtenerLibroCola() {
         try {
             if (colaLibros.esVacia()) {
                 return null;
             }
-            // FIFO: obtener el primer elemento y removerlo
+            
+            // OBTENER SIEMPRE el primer elemento (posición 0)
             Libro libro = colaLibros.getValor(0);
+            
+            // REMOVER SIEMPRE el primer elemento (posición 0)
             colaLibros.remover(0);
+            
             return libro;
+            
         } catch (PosicionIlegalException e) {
+            // Si hay error, retornar null
             return null;
         }
     }
