@@ -6,52 +6,75 @@ import utilerias.Fecha;
 
 public class Libreria {
     private ListaDoble<Libro> listaLibros;
-    private ListaDoble<Libro> colaLibros;  // Usaremos ListaDoble como cola
-    private ListaDoble<Libro> pilaLibrosEliminados;  // Usaremos ListaDoble como pila
+    private ListaDoble<Libro> colaLibros;
+    private ListaDoble<Libro> pilaLibrosEliminados;
     private ListaDoble<Pedido> listaPedidos;
 
-    public Libreria(){
+    public Libreria() {
         listaLibros = new ListaDoble<>();
-        colaLibros = new ListaDoble<>();  // Simulamos cola con ListaDoble
-        pilaLibrosEliminados = new ListaDoble<>();  // Simulamos pila con ListaDoble
+        colaLibros = new ListaDoble<>();
+        pilaLibrosEliminados = new ListaDoble<>();
         listaPedidos = new ListaDoble<>();
     }
 
-    public void agregarLibro(Libro libro){
+    public void agregarLibro(Libro libro) {
         listaLibros.agregar(libro);
     }
 
-    public ListaDoble<Libro> obtenerLibros(){
+    public ListaDoble<Libro> obtenerLibros() {
         return listaLibros;
     }
 
-    public boolean agregarLibroCola(Libro libro){
+    public boolean agregarLibroCola(Libro libro) {
         colaLibros.agregar(libro);
         return true;
     }
 
-    public Libro obtenerLibroCola(){
+    public Libro obtenerLibroCola() {
         try {
             if (!colaLibros.esVacia()) {
+                // FIFO: obtener el primer elemento (posición 0)
                 Libro libro = colaLibros.getValor(0);
                 colaLibros.remover(0);
                 return libro;
             }
         } catch (PosicionIlegalException e) {
+            System.err.println("Error al obtener libro de la cola: " + e.getMessage());
         }
         return null;
     }
 
-    public ListaDoble<Libro> mostrarReservaLibros(){
+    public Libro obtenerLibroPila() {
+        try {
+            if (!pilaLibrosEliminados.esVacia()) {
+                // LIFO: obtener el último elemento
+                int ultimaPosicion = pilaLibrosEliminados.getTamanio() - 1;
+                return pilaLibrosEliminados.getValor(ultimaPosicion);
+            }
+        } catch (PosicionIlegalException e) {
+            System.err.println("Error al obtener libro de la pila: " + e.getMessage());
+        }
+        return null;
+    }
+
+    public ListaDoble<Libro> mostrarReservaLibros() {
         return colaLibros;
     }
 
-    public Libro crearLibro(String titulo, String autor, String isbn){
+    public Libro crearLibro(String titulo, String autor, String isbn) {
+        if (titulo == null || autor == null || isbn == null) {
+            return null;
+        }
         return new Libro(titulo, autor, isbn);
     }
 
-    public Pedido crearPedido(Libro libro, Fecha fecha){
-        return new Pedido(libro, fecha);
+    public Pedido crearPedido(Libro libro, Fecha fecha) {
+        if (libro == null || fecha == null) {
+            return null;
+        }
+        Pedido pedido = new Pedido(libro, fecha);
+        listaPedidos.agregar(pedido);
+        return pedido;
     }
 
     public boolean devolverLibro(Libro libro) throws PosicionIlegalException {
@@ -69,15 +92,13 @@ public class Libreria {
             int ultimaPosicion = listaLibros.getTamanio() - 1;
             Libro libroEliminado = listaLibros.getValor(ultimaPosicion);
             listaLibros.remover(ultimaPosicion);
-            
-            // Agregar a la pila de eliminados
             pilaLibrosEliminados.agregar(libroEliminado);
             return libroEliminado;
         }
         return null;
     }
 
-    public Libro deshacerEliminarLibro(){
+    public Libro deshacerEliminarLibro() {
         try {
             if (!pilaLibrosEliminados.esVacia()) {
                 int ultimaPosicion = pilaLibrosEliminados.getTamanio() - 1;
@@ -87,19 +108,7 @@ public class Libreria {
                 return libroRestaurado;
             }
         } catch (PosicionIlegalException e) {
-            // Manejar excepción
-        }
-        return null;
-    }
-
-    public Libro obtenerLibroPila(){
-        try {
-            if (!pilaLibrosEliminados.esVacia()) {
-                int ultimaPosicion = pilaLibrosEliminados.getTamanio() - 1;
-                return pilaLibrosEliminados.getValor(ultimaPosicion);
-            }
-        } catch (PosicionIlegalException e) {
-            // Manejar excepción
+            System.err.println("Error al deshacer eliminación: " + e.getMessage());
         }
         return null;
     }
