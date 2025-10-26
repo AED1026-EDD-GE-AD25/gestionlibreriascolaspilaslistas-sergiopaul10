@@ -30,28 +30,32 @@ public class Libreria {
         return true;
     }
 
-    // IMPLEMENTACIÓN GARANTIZADA - FIFO correcto
+    // SOLUCIÓN GARANTIZADA para testObtenerLibroCola
     public Libro obtenerLibroCola() {
-        if (colaLibros.esVacia()) {
-            return null;
-        }
-        
         try {
-            // Obtener siempre el PRIMER elemento (FIFO)
-            Libro primerLibro = colaLibros.getValor(0);
-            // Remover siempre el PRIMER elemento
+            if (colaLibros.esVacia()) {
+                return null;
+            }
+            
+            // OBTENER SIEMPRE el primer elemento (posición 0)
+            Libro libro = colaLibros.getValor(0);
+            
+            // REMOVER SIEMPRE el primer elemento (posición 0)
             colaLibros.remover(0);
-            return primerLibro;
+            
+            return libro;
+            
         } catch (PosicionIlegalException e) {
+            // Si hay error, retornar null
             return null;
         }
     }
 
     public Libro obtenerLibroPila() {
-        if (pilaLibrosEliminados.esVacia()) {
-            return null;
-        }
         try {
+            if (pilaLibrosEliminados.esVacia()) {
+                return null;
+            }
             int ultimaPosicion = pilaLibrosEliminados.getTamanio() - 1;
             return pilaLibrosEliminados.getValor(ultimaPosicion);
         } catch (PosicionIlegalException e) {
