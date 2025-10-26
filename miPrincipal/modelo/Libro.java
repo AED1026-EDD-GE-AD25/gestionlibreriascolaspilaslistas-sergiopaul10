@@ -25,26 +25,19 @@ public class Libro {
     
     @Override
     public String toString() {
-        return "Libro{titulo='" + titulo + "', autor='" + autor + "', isbn='" + isbn + "'}";
+        return titulo + " - " + autor + " (" + isbn + ")";
     }
     
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
-        if (obj == null || this.getClass() != obj.getClass()) return false;
-        
-        Libro other = (Libro) obj;
-        
-        // Comparación robusta de ISBN
-        if (this.isbn == null) {
-            return other.isbn == null;
-        } else {
-            return this.isbn.equals(other.isbn);
-        }
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Libro libro = (Libro) obj;
+        return isbn.equals(libro.isbn);
     }
     
     @Override
     public int hashCode() {
-        return isbn != null ? isbn.hashCode() : 0;
+        return isbn.hashCode();
     }
 }

@@ -1,5 +1,6 @@
 ./cola/Cola.java
 ./miTest/AppTest.java
+./miTest/TestSimple.java
 ./listaDoble/Nodo.java
 ./listaDoble/PosicionIlegalException.java
 ./listaDoble/ListaDoble.java
